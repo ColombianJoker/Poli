@@ -5,6 +5,7 @@ public class ArregloIntGarantizado { // Declaración de la clase
   final static int PORCENTAJE=0; // Por si se desea crecer por porcentaje
   final static int ESPACIO=20;   // Crecimiento según requerimientos
   final static int INICIAL=8;    // Arbitrariamente escogemos iniciar en 8 (no en 1)
+  final static int FACTOR=2;     // Duplicar es el crecimiento original
   
   // *************************
   // * Atributos de la clase *
@@ -28,7 +29,7 @@ public class ArregloIntGarantizado { // Declaración de la clase
   /**
    * Este constructor no hace nada según "Escenario 3 - Las listas como estructuras de datos" 6.2.1
    */
-  public int ArregloGarantizado() {
+  public ArregloIntGarantizado() {
     // Nada
   }
   
@@ -82,11 +83,29 @@ public class ArregloIntGarantizado { // Declaración de la clase
     // si la nueva cantidad de elementos es mayor o igual que la capacidad del
     // arreglo, tocaría "crecer" la capacidad del arreglo.
     else {
+      // Si porcentaje deseado > 0 y la nueva cantidad es menor que (actual+porcentaje), ampliamos
+      // el arreglo en eso, porcentaje deseado, si no, si el espacio adicional > 0 y la nueva 
+      // cantidad es mayor que (actual+adicional), ampliamos el arreglo en eso, si no, si la
+      // nueva cantidad es menor que el doble, duplicamos el arreglo (duplicamos mientras FACTOR==2)
       // Si la nueva cantidad de elementos es menoe que el doble de la capacidad
       // del arreglo, dejarla en el doble de la capacidad del arreglo:
-      if(nuevaCantidadDeElementos<=(arreglo.length*2))
-        nuevaCantidadDeElementos=arreglo.length*2;
-
+      if(PORCENTAJE>0) {
+        System.err.format("> Intento de redimensionado por porcentaje (usando %d%%)%n",PORCENTAJE);
+        if(nuevaCantidadDeElementos<=(arreglo.length*(100+PORCENTAJE))/100)
+          nuevaCantidadDeElementos=(arreglo.length*(100+PORCENTAJE))/100; // División entera
+        System.err.format("> Redimensionado a %d%n",nuevaCantidadDeElementos);
+      } else if(ESPACIO>0) {
+        System.err.format("> Intento de redimensionado por espacio adicional (usando %d)%n",ESPACIO);
+        if(nuevaCantidadDeElementos<=(arreglo.length+ESPACIO))
+          nuevaCantidadDeElementos=arreglo.length+ESPACIO;
+        System.err.format("> Redimensionado a %d%n",nuevaCantidadDeElementos);
+      } else {
+        System.err.format("> Intento de redimensionado por factor (usando %d)%n",FACTOR);
+        if(nuevaCantidadDeElementos<=(arreglo.length*FACTOR))
+          nuevaCantidadDeElementos=arreglo.length*FACTOR;
+        System.err.format("> Redimensionado a %d%n",nuevaCantidadDeElementos);
+      }
+    
       // Crear un nuevo arreglo donde quepa la nueva cantidad de elementos:
       int[] nuevoArreglo=new int[nuevaCantidadDeElementos];
       // Copiar todos los elementos del viejo arreglo al nuevo arreglo:
@@ -127,8 +146,8 @@ public class ArregloIntGarantizado { // Declaración de la clase
     for(int i=index+1; i<tam; i++) {
       arreglo[i-1]=arreglo[i];
     }
-    // Poner el valor null en la posición tam-1 del arreglo:
-    arreglo[tam-1]=null;
+    // Poner el valor mínimo de entero en la posición tam-1 del arreglo:
+    arreglo[index]=Integer.MIN_VALUE;
     // Decrecer el tam en una unidad:
     tam--;
     // Retornar el elemento que antes se encontraba en la posición index:
@@ -141,13 +160,18 @@ public class ArregloIntGarantizado { // Declaración de la clase
     int e;                               // variable temporal para recibir de teclado
     System.out.println("Cuántos elementos?");
     int Cuantos=key.nextInt();
-    ArregloGarantizado Datos=new ArregloGarantizado();   // Crea el arreglo minúsculo
+    ArregloIntGarantizado Datos=new ArregloIntGarantizado();   // Crea el arreglo minúsculo
     // LlenarLista
+    System.err.println("----- Toma de datos -----");
     for(int n=0; n<Cuantos;n++){
       System.out.format("[%d]? ",n);
       e=key.nextInt();
       Datos.add(n,e);
     }
-    
+    System.err.println("----- Volcado de datos -----");
+    // MostrarLista
+    for(int n=0; n<Cuantos;n++) {
+      System.out.format("[%d] = %d%n",n,Datos.get(n));
+    }
   } // main
 }
