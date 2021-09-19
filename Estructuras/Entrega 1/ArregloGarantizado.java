@@ -1,7 +1,9 @@
-import java.util.Scanner;
-// trae las funciones de leer datos del teclado
+import java.util.Scanner;       // trae las funciones de leer datos del teclado
+import java.util.ArrayList;     // Para usar ArrayList
 
-public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la clase
+
+public class ArregloGarantizado<E> extends ArrayList<E> { // Declaración de la clase, parecida a la del PDF del
+                                                        // pero extiende la clasa y no implementa una interfaz
   final static int PORCENTAJE=0; // Por si se desea crecer por porcentaje
   final static int ESPACIO=20;   // Crecimiento según requerimientos
   final static int INICIAL=8;    // Arbitrariamente escogemos iniciar en 8 (no en 1)
@@ -30,7 +32,7 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
    */
   public ArregloGarantizado() {
     // Nada
-  }
+  } // ArregloGarantizado() constructor
   
   /**
    * Este destructor marca el arreglo como basura para que el GC libere (eventualmente) la memoria
@@ -43,7 +45,7 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
     }
     // Poner el tamanho en cero para que la lista quede vacía:
     tamanho=0;
-  }
+  } // .clear()
   
   /**
    * Método para consultar un elemento dado el índice, un getter
@@ -54,7 +56,7 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
     Object elemento=arreglo[index];
     // Retornar el elemento obtenido, convertido al tipo E por medio de un cast:
     return (E)elemento;
-  }
+  } // .get(int)
   
   /**
    * Método para modificar el elemento en la posición del índice dado
@@ -66,7 +68,7 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
     arreglo[index]=element;
     // Retornar el elemento que anteriormente se encontraba en la posición dada:
     return anteriorValor;
-  }
+  } // .set(int,element)
   
   /**
    * Método para garantizar que el arreglo tiene espacio para agregar un elemento
@@ -95,7 +97,7 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
       // Desechar el viejo arreglo, asignándole el nuevo:
       arreglo=nuevoArreglo;
     }
-  }
+  } // .garantizarCapacidad(int)
   
   /**
    * Método para insertar un nuevo elemento en una posición específica de la lista, dado el índice
@@ -113,7 +115,7 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
     arreglo[index]=element;
     // Incrementar el tamanho en una unidad:
     tamanho++;
-  }
+  } // .add(int,element)
 
   /**
    * Método para remover un elemento en una posición específica de la lista, dado el índice
@@ -132,21 +134,19 @@ public class ArregloGarantizado<E> implements VEDList<E> { // Declaración de la
     tamanho--;
     // Retornar el elemento que antes se encontraba en la posición index:
     return elemento;
-  }
+  } // .remove(int)
 
   public static void main(String[] args) {
     Scanner key=new Scanner(System.in);  // variable temporal para recibir de teclado
     int v;                                 // variable temporal para recibir el dato a almacenar
-    E e;
     System.out.println("Cuántos elementos?");
     int Cuantos=key.nextInt();
     ArregloGarantizado Datos=new ArregloGarantizado();   // Crea el arreglo minúsculo
     // LlenarLista
     for(int n=0; n<Cuantos;n++){
       System.out.format("[%d]? ",n);
-      e=(E)key.nextInt();
-      Datos.add(n,e);
+      v=key.nextInt();
+      Datos.add(n,(int)v);
     }
-    
-  } // main
-}
+  } // main()
+} // fin ArregloGarantizado
