@@ -1,14 +1,14 @@
-import java.util.Scanner;       // trae las funciones de leer datos del teclado
-import java.util.ArrayList;     // Para usar ArrayList
+import java.util.Scanner;                    //* trae las funciones de leer datos del teclado
+import java.util.ArrayList;                  //* Para usar ArrayList
 
-
-public class ArregloGarantizado<E> extends ArrayList<E> { // Declaración de la clase, parecida a la del PDF del
-                                                        // pero extiende la clasa y no implementa una interfaz
-  final static int PORCENTAJE=0;                        // Por si se desea crecer por porcentaje
-  final static int ESPACIO=20;                          // Crecimiento según requerimientos
-  final static int INICIAL=0;                           // Arbitrariamente escogemos iniciar en 8 (no en 1)
-  final static int FACTOR=2;                            // Crecimiento original en los ejemplos de los PDF
-  final static boolean DEBUG=true;                      // Para depurar
+public class ArregloBubble<E> extends ArrayList<E> {// Declaración de la clase
+  private final static int PORCENTAJE=0;    //* Por si se desea crecer por porcentaje
+  private final static int ESPACIO=20;        //* Crecimiento según requerimientos
+  private final static int INICIAL=0;        //* Arbitrariamente escogemos iniciar en 0 (no en 1)
+  private final static int FACTOR=2;         //* Duplicar es el crecimiento original
+  private static int COMPARACIONES=0;        //* Comparaciones en un algoritmo -ahora bubble-
+  private static int INTERCAMBIOS=0;         //* Intercambios en un algoritmo -ahora bubble-
+  private static boolean DEBUG=true;         //* Variable de apoyo a la depuración
   
   // *************************
   // * Atributos de la clase *
@@ -32,22 +32,23 @@ public class ArregloGarantizado<E> extends ArrayList<E> { // Declaración de la 
   /**
    * Este constructor no hace nada según "Escenario 3 - Las listas como estructuras de datos" 6.2.1
    */
-  public ArregloGarantizado() {
+  public ArregloBubble() {
     // Nada
-  } // ArregloGarantizado() constructor
+  }
   
   /**
    * Este destructor marca el arreglo como basura para que el GC libere (eventualmente) la memoria
    * Código tomado directamente de "Escenario 3 - Las listas como estructuras de datos" 6.2.2
    */
   public void clear() {
-    // Liberar los apuntadores de todas las casillas ocupadas del arreglo
+    // Liberar los apuntadores de todas las casillas ocupadas del arreglo. Todas las casillas las
+    // inicializamos en el mínimo entero posible
     for(int i=0; i<=tam; i++) {
-      arreglo[i]=null;
+      arreglo[i]=Integer.MIN_VALUE;
     }
     // Poner el tam en cero para que la lista quede vacía:
     tam=0;
-  } // .clear()
+  }
   
   /**
    * Método para consultar un elemento dado el índice, un getter
@@ -55,7 +56,7 @@ public class ArregloGarantizado<E> extends ArrayList<E> { // Declaración de la 
    */
   public E get(int index) {
     // Obtener el elemento que está en la posición index del arreglo:
-    Object elemento=arreglo[index];
+    E elemento=(E)arreglo[index];
     // Retornar el elemento obtenido, convertido al tipo E por medio de un cast:
     return (E)elemento;
   } // .get(int)
@@ -162,24 +163,65 @@ public class ArregloGarantizado<E> extends ArrayList<E> { // Declaración de la 
     return elemento;
   } // .remove(int)
 
+  /**
+   * Método para ordenar usando burbuja
+   */
+  public void bubbles() {
+    if(tam<2) {                              //* Solo ordenamos listas/arreglos de al menos dos elementos
+      if(DEBUG)
+        System.err.println("\t\t»Lista/Arreglo de tamaño 1, no se necesita ordenar");
+    } else {                                 //* Solo ordenamos listas/arreglos de al menos dos elementos
+      boolean cambiado;                      //* Variable de control para saber si se da una vuelta más
+      Object temp;                              //* Variable temporal para hacer intercambio
+      for(int i=0; i<tam; i++) {             //* Damos hasta n pasadas al arreglo
+        cambiado=false;                      //* Si en una vuelta no se hacen cambios, no continuar
+        for(int j=1; j<tam; j++) {           //* Comparamos un elemento con el anterior, entonces no miramos el 
+          COMPARACIONES++;                   //* índice 0, si no el 1 lo comparamos con el 0
+          if(DEBUG)
+            System.err.format("\t\t» %4d comparaciones: %d < %d?%n",COMPARACIONES,arreglo[j],arreglo[j-1]);
+          if( (int)(arreglo[j]) < (int)(arreglo[j-1]) ){
+            INTERCAMBIOS++;
+            if(DEBUG)
+              System.err.format("\t\t» %4d intercambios:  %d<->%d%n",INTERCAMBIOS,arreglo[j],arreglo[j-1]);
+            temp=arreglo[j-1];
+            arreglo[j-1]=arreglo[j];
+            arreglo[j]=temp;
+            cambiado=true;
+          }
+        }
+        if(!cambiado)
+          break;                              //* No seguir, ya está
+      }
+    }
+  }
+
   public static void main(String[] args) {
-    Scanner key=new Scanner(System.in);  // variable temporal para recibir de teclado
-    int v;                               // variable temporal para recibir el dato a almacenar
+    Scanner key=new Scanner(System.in);  //* variable temporal para recibir de teclado
+    int v;                               //* variable temporal para recibir el dato a almacenar
     System.out.println("Cuántos elementos?");
     int Cuantos=key.nextInt();
-    ArregloGarantizado Datos=new ArregloGarantizado();   // Crea el arreglo minúsculo
-    // LlenarLista
-    System.err.println("----- Toma de datos -----");
-    for(int n=0; n<Cuantos;n++){
-      System.out.format("[%d]? ",n);
-      v=key.nextInt();
-      Datos.add(n,(int)v);
-    }
-    System.err.println("----- Volcado de datos -----");
-    // MostrarLista
-    for(int n=0; n<Cuantos;n++) {
-      System.out.format("[%d] = %d%n",n,Datos.get(n));
+    if(Cuantos<=0)
+      System.err.println("Solo podemos trabajar listas/arreglos de al menos un elemento!");
+    else {
+      ArregloBubble Datos=new ArregloBubble();   //* Crea el arreglo minúsculo
+      // LlenarLista
+      System.err.println("----- Toma de datos -----");
+      for(int n=0; n<Cuantos;n++){
+        System.out.format("[%2d]? ",n);
+        v=key.nextInt();
+        Datos.add(n,(int)v);
+      }
+      System.err.println("----- Volcado de datos -----");
+      // MostrarLista
+      for(int n=0; n<Cuantos;n++) {
+        System.out.format("[%2d] = %d%n",n,Datos.get(n));
+      }
+      Datos.bubbles();                       //* Ordenado
+      System.err.println("----- Volcado de datos -----");
+      // MostrarLista
+      for(int n=0; n<Cuantos;n++) {
+        System.out.format("[%2d] = %d%n",n,Datos.get(n));
+      }
     }
   } // main
-
-} // fin ArregloGarantizado
+}

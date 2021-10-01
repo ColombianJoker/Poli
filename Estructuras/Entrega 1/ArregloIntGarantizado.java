@@ -1,7 +1,9 @@
-import java.util.Scanner;
-// trae las funciones de leer datos del teclado
+import java.util.Scanner;       // trae las funciones de leer datos del teclado
+import java.util.ArrayList;     // Para usar ArrayList
 
-public class ArregloIntGarantizado { // Declaración de la clase
+
+public class ArregloGarantizado<E> extends ArrayList<E> { // Declaración de la clase, parecida a la del PDF del
+                                                        // pero extiende la clasa y no implementa una interfaz
   final static int PORCENTAJE=0; // Por si se desea crecer por porcentaje
   final static int ESPACIO=20;   // Crecimiento según requerimientos
   final static int INICIAL=8;    // Arbitrariamente escogemos iniciar en 8 (no en 1)
